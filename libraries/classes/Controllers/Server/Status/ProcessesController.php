@@ -1,29 +1,34 @@
 <?php
-/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Holds the PhpMyAdmin\Controllers\Server\Status\ProcessesController
- *
- * @package PhpMyAdmin\Controllers
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin\Controllers\Server\Status;
 
+use PhpMyAdmin\Common;
+use PhpMyAdmin\Html\Generator;
 use PhpMyAdmin\Message;
 use PhpMyAdmin\Util;
+use function array_keys;
+use function count;
+use function mb_strtolower;
+use function strlen;
+use function ucfirst;
 
-/**
- * Class ProcessesController
- * @package PhpMyAdmin\Controllers\Server\Status
- */
 class ProcessesController extends AbstractController
 {
     /**
      * @param array $params Request parameters
-     * @return string
      */
     public function index(array $params): string
     {
+        Common::server();
+
+        $header = $this->response->getHeader();
+        $scripts = $header->getScripts();
+        $scripts->addFile('server/status/processes.js');
+
         $isChecked = false;
         if (! empty($params['showExecuting'])) {
             $isChecked = true;
@@ -50,20 +55,28 @@ class ProcessesController extends AbstractController
      * Only sends the process list table
      *
      * @param array $params Request parameters
-     * @return string
      */
     public function refresh(array $params): string
     {
+        if (! $this->response->isAjax()) {
+            return '';
+        }
+
         return $this->getList($params);
     }
 
     /**
      * @param array $params Request parameters
+     *
      * @return array
      */
     public function kill(array $params): array
     {
-        $kill = (int) $params['kill'];
+        if (! $this->response->isAjax()) {
+            return [];
+        }
+
+        $kill = (int) $params['id'];
         $query = $this->dbi->getKillQuery($kill);
 
         if ($this->dbi->tryQuery($query)) {
@@ -90,7 +103,6 @@ class ProcessesController extends AbstractController
 
     /**
      * @param array $params Request parameters
-     * @return string
      */
     private function getList(array $params): string
     {
@@ -224,7 +236,7 @@ class ProcessesController extends AbstractController
                 'time' => $process['Time'],
                 'state' => ! empty($process['State']) ? $process['State'] : '---',
                 'progress' => ! empty($process['Progress']) ? $process['Progress'] : '---',
-                'info' => ! empty($process['Info']) ? Util::formatSql(
+                'info' => ! empty($process['Info']) ? Generator::formatSql(
                     $process['Info'],
                     ! $showFullSql
                 ) : '---',
