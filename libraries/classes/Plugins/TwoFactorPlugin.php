@@ -1,17 +1,19 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Two authentication factor handling
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin\Plugins;
 
+use PhpMyAdmin\Config;
 use PhpMyAdmin\Core;
 use PhpMyAdmin\Message;
 use PhpMyAdmin\Template;
 use PhpMyAdmin\TwoFactor;
-use function parse_url;
-use function sprintf;
 
 /**
  * Two factor authentication plugin class
@@ -19,10 +21,14 @@ use function sprintf;
  * This is basic implementation which does no
  * additional authentication, subclasses are expected
  * to implement this.
+ *
+ * @package PhpMyAdmin
  */
 class TwoFactorPlugin
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     public static $id = '';
 
     /**
@@ -30,16 +36,24 @@ class TwoFactorPlugin
      */
     public static $showSubmit = true;
 
-    /** @var TwoFactor */
+    /**
+     * @var TwoFactor
+     */
     protected $_twofactor;
 
-    /** @var bool */
+    /**
+     * @var boolean
+     */
     protected $_provided;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $_message;
 
-    /** @var Template */
+    /**
+     * @var Template
+     */
     public $template;
 
     /**
@@ -78,7 +92,7 @@ class TwoFactorPlugin
     /**
      * Checks authentication, returns true on success
      *
-     * @return bool
+     * @return boolean
      */
     public function check()
     {
@@ -108,7 +122,7 @@ class TwoFactorPlugin
     /**
      * Performs backend configuration
      *
-     * @return bool
+     * @return boolean
      */
     public function configure()
     {
@@ -140,12 +154,13 @@ class TwoFactorPlugin
      *
      * Either hostname or hostname with scheme.
      *
-     * @param bool $return_url Whether to generate URL
+     * @param boolean $return_url Whether to generate URL
      *
      * @return string
      */
     public function getAppId($return_url)
     {
+        /** @var Config $PMA_Config */
         global $PMA_Config;
 
         $url = $PMA_Config->get('PmaAbsoluteUri');

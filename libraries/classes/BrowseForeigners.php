@@ -1,64 +1,68 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
- * Contains functions used by browse foreigners
+ * Contains functions used by browse_foreigners.php
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
-use function asort;
-use function ceil;
-use function floor;
-use function htmlspecialchars;
-use function is_array;
-use function mb_strlen;
-use function mb_substr;
-
 /**
  * PhpMyAdmin\BrowseForeigners class
+ *
+ * @package PhpMyAdmin
  */
 class BrowseForeigners
 {
-    /** @var int */
     private $limitChars;
-    /** @var int */
     private $maxRows;
-    /** @var int */
     private $repeatCells;
-    /** @var bool */
     private $showAll;
-    /** @var string */
     private $themeImage;
 
-    /** @var Template */
+    /**
+     * @var Template
+     */
     public $template;
 
     /**
-     * @param Template $template Template object
+     * Constructor
+     *
+     * @param int      $limitChars  Maximum number of characters to show
+     * @param int      $maxRows     Number of rows to display
+     * @param int      $repeatCells Repeat the headers every X cells, or 0 to deactivate
+     * @param boolean  $showAll     Shows the 'Show all' button or not
+     * @param string   $themeImage  Theme image path
+     * @param Template $template    Template object
      */
-    public function __construct(Template $template)
-    {
-        global $cfg, $pmaThemeImage;
-
+    public function __construct(
+        int $limitChars,
+        int $maxRows,
+        int $repeatCells,
+        bool $showAll,
+        string $themeImage,
+        Template $template
+    ) {
+        $this->limitChars = $limitChars;
+        $this->maxRows = $maxRows;
+        $this->repeatCells = $repeatCells;
+        $this->showAll = $showAll;
+        $this->themeImage = $themeImage;
         $this->template = $template;
-
-        $this->limitChars = (int) $cfg['LimitChars'];
-        $this->maxRows = (int) $cfg['MaxRows'];
-        $this->repeatCells = (int) $cfg['RepeatCells'];
-        $this->showAll = (bool) $cfg['ShowAll'];
-        $this->themeImage = $pmaThemeImage;
     }
 
     /**
      * Function to get html for one relational key
      *
-     * @param int    $horizontal_count   the current horizontal count
-     * @param string $header             table header
-     * @param array  $keys               all the keys
-     * @param int    $indexByKeyname     index by keyname
-     * @param array  $descriptions       descriptions
-     * @param int    $indexByDescription index by description
-     * @param string $current_value      current value on the edit form
+     * @param integer $horizontal_count   the current horizontal count
+     * @param string  $header             table header
+     * @param array   $keys               all the keys
+     * @param integer $indexByKeyname     index by keyname
+     * @param array   $descriptions       descriptions
+     * @param integer $indexByDescription index by description
+     * @param string  $current_value      current value on the edit form
      *
      * @return array the generated html
      */
@@ -160,6 +164,8 @@ class BrowseForeigners
      * @param array       $foreignData   foreign column data
      * @param string|null $fieldkey      field key
      * @param string      $current_value current columns's value
+     *
+     * @return string
      */
     public function getHtmlForRelationalFieldSelection(
         string $db,
@@ -177,9 +183,9 @@ class BrowseForeigners
         ]);
 
         $output = '<form class="ajax" '
-            . 'id="browse_foreign_form" name="browse_foreign_from" action="'
-            . Url::getFromRoute('/browse-foreigners')
-            . '" method="post"><fieldset>'
+            . 'id="browse_foreign_form" name="browse_foreign_from" '
+            . 'action="browse_foreigners.php" method="post">'
+            . '<fieldset>'
             . Url::getHiddenInputs($db, $table)
             . '<input type="hidden" name="field" value="' . htmlspecialchars($field)
             . '">'
@@ -305,6 +311,8 @@ class BrowseForeigners
      * Function to get html for the goto page option
      *
      * @param array|null $foreignData foreign data
+     *
+     * @return string
      */
     private function getHtmlForGotoPage(?array $foreignData): string
     {
@@ -339,6 +347,8 @@ class BrowseForeigners
      * Function to get foreign limit
      *
      * @param string|null $foreignShowAll foreign navigation
+     *
+     * @return string
      */
     public function getForeignLimit(?string $foreignShowAll): ?string
     {

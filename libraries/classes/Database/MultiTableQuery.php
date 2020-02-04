@@ -1,6 +1,9 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Handles DB Multi-table query
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
@@ -10,12 +13,11 @@ use PhpMyAdmin\DatabaseInterface;
 use PhpMyAdmin\ParseAnalyze;
 use PhpMyAdmin\Sql;
 use PhpMyAdmin\Template;
-use PhpMyAdmin\Url;
-use function array_keys;
-use function md5;
 
 /**
  * Class to handle database Multi-table querying
+ *
+ * @package PhpMyAdmin
  */
 class MultiTableQuery
 {
@@ -39,7 +41,7 @@ class MultiTableQuery
      * Default number of columns
      *
      * @access private
-     * @var int
+     * @var integer
      */
     private $defaultNoOfColumns;
 
@@ -51,14 +53,18 @@ class MultiTableQuery
      */
     private $tables;
 
-    /** @var Template */
+    /**
+     * @var Template
+     */
     public $template;
 
     /**
+     * Constructor
+     *
      * @param DatabaseInterface $dbi                DatabaseInterface instance
      * @param Template          $template           Template instance
      * @param string            $dbName             Database name
-     * @param int               $defaultNoOfColumns Default number of columns
+     * @param integer           $defaultNoOfColumns Default number of columns
      */
     public function __construct(
         DatabaseInterface $dbi,
@@ -82,8 +88,6 @@ class MultiTableQuery
      */
     public function getFormHtml()
     {
-        global $route;
-
         $tables = [];
         foreach ($this->tables as $table) {
             $tables[$table]['hash'] = md5($table);
@@ -95,7 +99,6 @@ class MultiTableQuery
             'db' => $this->db,
             'tables' => $tables,
             'default_no_of_columns' => $this->defaultNoOfColumns,
-            'route' => $route,
         ]);
     }
 
@@ -110,9 +113,13 @@ class MultiTableQuery
      */
     public static function displayResults($sqlQuery, $db, $pmaThemeImage)
     {
-        list(,$db,) = ParseAnalyze::sqlQuery($sqlQuery, $db);
+        list(
+            $analyzedSqlResults,
+            $db,
+        ) = ParseAnalyze::sqlQuery($sqlQuery, $db);
 
-        $goto = Url::getFromRoute('/database/multi_table_query');
+        extract($analyzedSqlResults);
+        $goto = 'db_multi_table_query.php';
         $sql = new Sql();
         $sql->executeQueryAndSendQueryResponse(
             null, // analyzed_sql_results

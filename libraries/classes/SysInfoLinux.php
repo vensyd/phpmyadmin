@@ -1,23 +1,21 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Hold PhpMyAdmin\SysInfoLinux class
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
-use function array_combine;
-use function array_merge;
-use function file_get_contents;
-use function intval;
-use function is_readable;
-use function mb_strpos;
-use function mb_substr;
-use function preg_match_all;
-use function preg_split;
+use PhpMyAdmin\SysInfo;
+use PhpMyAdmin\SysInfoBase;
 
 /**
  * Linux based SysInfo class
+ *
+ * @package PhpMyAdmin
  */
 class SysInfoLinux extends SysInfoBase
 {
@@ -39,7 +37,7 @@ class SysInfoLinux extends SysInfoBase
             $pos = 0;
         }
         $nums = preg_split(
-            '/\s+/',
+            "/\s+/",
             mb_substr(
                 $buf,
                 0,

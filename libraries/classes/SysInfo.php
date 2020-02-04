@@ -1,21 +1,24 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Library for extracting information about system memory and cpu.
  * Currently supports all Windows and Linux platforms
  *
  * This code is based on the OS Classes from the phpsysinfo project
  * (https://phpsysinfo.github.io/phpsysinfo/)
+ *
+ * @package PhpMyAdmin-sysinfo
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
-use function in_array;
-use function ucfirst;
-use const PHP_OS;
+use PhpMyAdmin\SysInfoBase;
 
 /**
  * PhpMyAdmin\SysInfo class
+ *
+ * @package PhpMyAdmin
  */
 class SysInfo
 {

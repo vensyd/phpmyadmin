@@ -1,28 +1,24 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Hold the PhpMyAdmin\LanguageManager class
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
-use PhpMyAdmin\Html\MySQLDocumentation;
-use function closedir;
-use function count;
-use function explode;
-use function file_exists;
-use function is_dir;
-use function opendir;
-use function preg_grep;
-use function readdir;
-use function strtolower;
-use function trigger_error;
-use function uasort;
-use function ucfirst;
-use const E_USER_ERROR;
+use PhpMyAdmin\Core;
+use PhpMyAdmin\Language;
+use PhpMyAdmin\Template;
+use PhpMyAdmin\Url;
+use PhpMyAdmin\Util;
 
 /**
  * Language selection manager
+ *
+ * @package PhpMyAdmin
  */
 class LanguageManager
 {
@@ -677,7 +673,9 @@ class LanguageManager
     private $_lang_failed_cookie;
     private $_lang_failed_request;
 
-    /** @var LanguageManager */
+    /**
+     * @var LanguageManager
+     */
     private static $instance;
 
     /**
@@ -715,12 +713,12 @@ class LanguageManager
         }
 
         /* Process all files */
-        while (($file = readdir($handle)) !== false) {
+        while (false !== ($file = readdir($handle))) {
             $path = LOCALE_PATH
                 . '/' . $file
                 . '/LC_MESSAGES/phpmyadmin.mo';
-            if ($file != '.'
-                && $file != '..'
+            if ($file != "."
+                && $file != ".."
                 && @file_exists($path)
             ) {
                 $result[] = $file;
@@ -755,7 +753,7 @@ class LanguageManager
     /**
      * Checks whether there are some languages available
      *
-     * @return bool
+     * @return boolean
      */
     public function hasChoice()
     {
@@ -937,16 +935,17 @@ class LanguageManager
         }
     }
 
+
     /**
      * Returns HTML code for the language selector
      *
      * @param Template $template     Template instance
-     * @param bool     $use_fieldset whether to use fieldset for selection
-     * @param bool     $show_doc     whether to show documentation links
+     * @param boolean  $use_fieldset whether to use fieldset for selection
+     * @param boolean  $show_doc     whether to show documentation links
      *
      * @return string
      *
-     * @access public
+     * @access  public
      */
     public function getSelectorDisplay(Template $template, $use_fieldset = false, $show_doc = true)
     {
@@ -961,7 +960,7 @@ class LanguageManager
         $language_title = __('Language')
             . (__('Language') != 'Language' ? ' - <em>Language</em>' : '');
         if ($show_doc) {
-            $language_title .= MySQLDocumentation::showDocumentation('faq', 'faq7-2');
+            $language_title .= Util::showDocu('faq', 'faq7-2');
         }
 
         $available_languages = $this->sortedLanguages();

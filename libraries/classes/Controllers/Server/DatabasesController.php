@@ -1,6 +1,9 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Holds the PhpMyAdmin\Controllers\Server\DatabasesController
+ *
+ * @package PhpMyAdmin\Controllers
  */
 declare(strict_types=1);
 
@@ -9,63 +12,48 @@ namespace PhpMyAdmin\Controllers\Server;
 use PhpMyAdmin\Charsets;
 use PhpMyAdmin\Charsets\Charset;
 use PhpMyAdmin\Charsets\Collation;
-use PhpMyAdmin\CheckUserPrivileges;
-use PhpMyAdmin\Common;
 use PhpMyAdmin\Controllers\AbstractController;
 use PhpMyAdmin\DatabaseInterface;
-use PhpMyAdmin\Html\Generator;
 use PhpMyAdmin\Message;
-use PhpMyAdmin\ReplicationInfo;
-use PhpMyAdmin\Response;
-use PhpMyAdmin\Template;
 use PhpMyAdmin\Url;
 use PhpMyAdmin\Util;
-use function array_key_exists;
-use function array_keys;
-use function array_search;
-use function count;
-use function explode;
-use function in_array;
-use function mb_strlen;
-use function mb_strtolower;
-use function strlen;
-use function strpos;
 
 /**
  * Handles viewing and creating and deleting databases
+ *
+ * @package PhpMyAdmin\Controllers
  */
 class DatabasesController extends AbstractController
 {
-    /** @var array array of database details */
+    /**
+     * @var array array of database details
+     */
     private $databases = [];
 
-    /** @var int number of databases */
+    /**
+     * @var int number of databases
+     */
     private $databaseCount = 0;
 
-    /** @var string sort by column */
+    /**
+     * @var string sort by column
+     */
     private $sortBy;
 
-    /** @var string sort order of databases */
+    /**
+     * @var string sort order of databases
+     */
     private $sortOrder;
 
-    /** @var bool whether to show database statistics */
+    /**
+     * @var boolean whether to show database statistics
+     */
     private $hasStatistics;
 
-    /** @var int position in list navigation */
-    private $position;
-
     /**
-     * @param Response          $response Response object
-     * @param DatabaseInterface $dbi      DatabaseInterface object
-     * @param Template          $template Template that should be used (if provided, default one otherwise)
+     * @var int position in list navigation
      */
-    public function __construct($response, $dbi, Template $template)
-    {
-        parent::__construct($response, $dbi, $template);
-
-        $checkUserPrivileges = new CheckUserPrivileges($dbi);
-        $checkUserPrivileges->getPrivileges();
-    }
+    private $position;
 
     /**
      * Index action
@@ -74,17 +62,13 @@ class DatabasesController extends AbstractController
      *
      * @return string HTML
      */
-    public function index(array $params): string
+    public function indexAction(array $params): string
     {
         global $cfg, $server, $dblist, $is_create_db_priv;
         global $replication_info, $db_to_create, $pmaThemeImage, $text_dir;
 
-        $header = $this->response->getHeader();
-        $scripts = $header->getScripts();
-        $scripts->addFile('server/databases.js');
-
-        Common::server();
-        ReplicationInfo::load();
+        include_once ROOT_PATH . 'libraries/replication.inc.php';
+        include_once ROOT_PATH . 'libraries/server_common.inc.php';
 
         $this->setSortDetails($params['sort_by'], $params['sort_order']);
         $this->hasStatistics = ! empty($params['statistics']);
@@ -157,6 +141,7 @@ class DatabasesController extends AbstractController
             'has_master_replication' => $replication_info['master']['status'],
             'has_slave_replication' => $replication_info['slave']['status'],
             'is_drop_allowed' => $this->dbi->isSuperuser() || $cfg['AllowUserDropDatabase'],
+            'default_tab_database' => $cfg['DefaultTabDatabase'],
             'pma_theme_image' => $pmaThemeImage,
             'text_dir' => $text_dir,
         ]);
@@ -169,13 +154,9 @@ class DatabasesController extends AbstractController
      *
      * @return array JSON
      */
-    public function create(array $params): array
+    public function createDatabaseAction(array $params): array
     {
         global $cfg, $db;
-
-        if (! isset($params['new_db']) || mb_strlen($params['new_db']) === 0 || ! $this->response->isAjax()) {
-            return ['message' => Message::error()];
-        }
 
         // lower_case_table_names=1 `DB` becomes `db`
         if ($this->dbi->getLowerCaseNames() === '1') {
@@ -189,7 +170,7 @@ class DatabasesController extends AbstractController
          */
         $sqlQuery = 'CREATE DATABASE ' . Util::backquote($params['new_db']);
         if (! empty($params['db_collation'])) {
-            [$databaseCharset] = explode('_', $params['db_collation']);
+            list($databaseCharset) = explode('_', $params['db_collation']);
             $charsets = Charsets::getCharsets(
                 $this->dbi,
                 $cfg['Server']['DisableIS']
@@ -198,8 +179,8 @@ class DatabasesController extends AbstractController
                 $this->dbi,
                 $cfg['Server']['DisableIS']
             );
-            if (array_key_exists($databaseCharset, $charsets)
-                && array_key_exists($params['db_collation'], $collations[$databaseCharset])
+            if (in_array($databaseCharset, array_keys($charsets))
+                && in_array($params['db_collation'], array_keys($collations[$databaseCharset]))
             ) {
                 $sqlQuery .= ' DEFAULT'
                     . Util::getCharsetQueryPart($params['db_collation']);
@@ -223,18 +204,13 @@ class DatabasesController extends AbstractController
             $message = Message::success(__('Database %1$s has been created.'));
             $message->addParam($params['new_db']);
 
-            $scriptName = Util::getScriptNameForOption(
-                $cfg['DefaultTabDatabase'],
-                'database'
-            );
-
             $json = [
                 'message' => $message,
-                'sql_query' => Generator::getMessage(null, $sqlQuery, 'success'),
-                'url_query' => $scriptName . Url::getCommon(
-                    ['db' => $params['new_db']],
-                    strpos($scriptName, '?') === false ? '?' : '&'
-                ),
+                'sql_query' => Util::getMessage(null, $sqlQuery, 'success'),
+                'url_query' => Util::getScriptNameForOption(
+                    $cfg['DefaultTabDatabase'],
+                    'database'
+                ) . Url::getCommon(['db' => $params['new_db']]),
             ];
         }
 
@@ -248,21 +224,15 @@ class DatabasesController extends AbstractController
      *
      * @return array JSON
      */
-    public function destroy(array $params): array
+    public function dropDatabasesAction(array $params): array
     {
-        global $submit_mult, $mult_btn, $selected, $err_url, $cfg;
+        global $submit_mult, $mult_btn, $selected;
 
-        if (! isset($params['drop_selected_dbs'])
-            || ! $this->response->isAjax()
-            || (! $this->dbi->isSuperuser() && ! $cfg['AllowUserDropDatabase'])
-        ) {
-            $message = Message::error();
-        } elseif (! isset($params['selected_dbs'])) {
+        if (! isset($params['selected_dbs'])) {
             $message = Message::error(__('No databases selected.'));
         } else {
-            // for mult_submits.inc.php
-            $action = Url::getFromRoute('/server/databases');
-            $err_url = $action;
+            $action = 'server_databases.php';
+            $err_url = $action . Url::getCommon();
 
             $submit_mult = 'drop_db';
             $mult_btn = __('Yes');
@@ -296,6 +266,8 @@ class DatabasesController extends AbstractController
      *
      * @param string|null $sortBy    sort by
      * @param string|null $sortOrder sort order
+     *
+     * @return void
      */
     private function setSortDetails(?string $sortBy, ?string $sortOrder): void
     {
@@ -351,14 +323,14 @@ class DatabasesController extends AbstractController
             foreach ($replicationTypes as $type) {
                 if ($replication_info[$type]['status']) {
                     $key = array_search(
-                        $database['SCHEMA_NAME'],
+                        $database["SCHEMA_NAME"],
                         $replication_info[$type]['Ignore_DB']
                     );
                     if (strlen((string) $key) > 0) {
                         $replication[$type]['is_replicated'] = false;
                     } else {
                         $key = array_search(
-                            $database['SCHEMA_NAME'],
+                            $database["SCHEMA_NAME"],
                             $replication_info[$type]['Do_DB']
                         );
 
@@ -380,11 +352,6 @@ class DatabasesController extends AbstractController
                 }
             }
 
-            $url = Util::getScriptNameForOption($cfg['DefaultTabDatabase'], 'database');
-            $url .= Url::getCommonRaw(
-                ['db' => $database['SCHEMA_NAME']],
-                strpos($url, '?') === false ? '?' : '&'
-            );
             $databases[$database['SCHEMA_NAME']] = [
                 'name' => $database['SCHEMA_NAME'],
                 'collation' => [],
@@ -394,7 +361,6 @@ class DatabasesController extends AbstractController
                     $database['SCHEMA_NAME'],
                     true
                 ),
-                'url' => $url,
             ];
             $collation = Charsets::findCollationByName(
                 $this->dbi,

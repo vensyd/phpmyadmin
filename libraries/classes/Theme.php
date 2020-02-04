@@ -1,25 +1,17 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * hold Theme class
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
-use function file_exists;
-use function file_get_contents;
-use function filemtime;
-use function filesize;
-use function in_array;
-use function is_array;
-use function is_dir;
-use function is_readable;
-use function json_decode;
-use function sprintf;
-use function trigger_error;
-use function trim;
-use function version_compare;
-use const E_USER_ERROR;
+use PhpMyAdmin\Template;
+use PhpMyAdmin\ThemeManager;
+use PhpMyAdmin\Url;
 
 /**
  * handles theme
@@ -27,51 +19,52 @@ use const E_USER_ERROR;
  * @todo add the possibility to make a theme depend on another theme
  * and by default on original
  * @todo make all components optional - get missing components from 'parent' theme
+ *
+ * @package PhpMyAdmin
  */
 class Theme
 {
     /**
      * @var string theme version
-     * @access protected
+     * @access  protected
      */
     public $version = '0.0.0.0';
 
     /**
      * @var string theme name
-     * @access protected
+     * @access  protected
      */
     public $name = '';
 
     /**
      * @var string theme id
-     * @access protected
+     * @access  protected
      */
     public $id = '';
 
     /**
      * @var string theme path
-     * @access protected
+     * @access  protected
      */
     public $path = '';
 
     /**
      * @var string image path
-     * @access protected
+     * @access  protected
      */
     public $img_path = '';
 
     /**
-     * @var int last modification time for info file
-     * @access protected
+     * @var integer last modification time for info file
+     * @access  protected
      */
     public $mtime_info = 0;
 
     /**
      * needed because sometimes, the mtime for different themes
      * is identical
-     *
-     * @var int filesize for info file
-     * @access protected
+     * @var integer filesize for info file
+     * @access  protected
      */
     public $filesize_info = 0;
 
@@ -92,9 +85,14 @@ class Theme
         'icons',
     ];
 
-    /** @var Template */
+    /**
+     * @var Template
+     */
     public $template;
 
+    /**
+     * Theme constructor.
+     */
     public function __construct()
     {
         $this->template = new Template();
@@ -103,9 +101,8 @@ class Theme
     /**
      * Loads theme information
      *
-     * @return bool whether loading them info was successful or not
-     *
-     * @access public
+     * @return boolean whether loading them info was successful or not
+     * @access  public
      */
     public function loadInfo()
     {
@@ -163,7 +160,6 @@ class Theme
      * @param string $folder path to theme
      *
      * @return Theme|false
-     *
      * @static
      * @access public
      */
@@ -185,9 +181,8 @@ class Theme
     /**
      * checks image path for existence - if not found use img from fallback theme
      *
-     * @return bool
-     *
      * @access public
+     * @return bool
      */
     public function checkImgPath()
     {
@@ -218,9 +213,8 @@ class Theme
     /**
      * returns path to theme
      *
-     * @return string path to theme
-     *
      * @access public
+     * @return string path to theme
      */
     public function getPath()
     {
@@ -233,7 +227,6 @@ class Theme
      * @param string $path path to theme
      *
      * @return void
-     *
      * @access public
      */
     public function setPath($path)
@@ -247,7 +240,6 @@ class Theme
      * @param string $version version to set
      *
      * @return void
-     *
      * @access public
      */
     public function setVersion($version)
@@ -259,7 +251,6 @@ class Theme
      * returns version
      *
      * @return string version
-     *
      * @access public
      */
     public function getVersion()
@@ -273,8 +264,7 @@ class Theme
      *
      * @param string $version version to compare to
      *
-     * @return bool true if theme version is equal or higher to $version
-     *
+     * @return boolean true if theme version is equal or higher to $version
      * @access public
      */
     public function checkVersion($version)
@@ -288,7 +278,6 @@ class Theme
      * @param string $name name to set
      *
      * @return void
-     *
      * @access public
      */
     public function setName($name)
@@ -299,9 +288,8 @@ class Theme
     /**
      * returns name
      *
+     * @access  public
      * @return string name
-     *
-     * @access public
      */
     public function getName()
     {
@@ -314,7 +302,6 @@ class Theme
      * @param string $id new id
      *
      * @return void
-     *
      * @access public
      */
     public function setId($id)
@@ -326,7 +313,6 @@ class Theme
      * returns id
      *
      * @return string id
-     *
      * @access public
      */
     public function getId()
@@ -340,7 +326,6 @@ class Theme
      * @param string $path path to images for this theme
      *
      * @return void
-     *
      * @access public
      */
     public function setImgPath($path)
@@ -356,9 +341,8 @@ class Theme
      * @param string $file     file name for image
      * @param string $fallback fallback image
      *
-     * @return string image path for this theme
-     *
      * @access public
+     * @return string image path for this theme
      */
     public function getImgPath($file = null, $fallback = null)
     {
@@ -381,7 +365,6 @@ class Theme
      * Renders the preview for this theme
      *
      * @return string
-     *
      * @access public
      */
     public function getPrintPreview()

@@ -1,6 +1,9 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Helper functions for RTE
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
@@ -8,6 +11,8 @@ namespace PhpMyAdmin\Rte;
 
 /**
  * PhpMyAdmin\Rte\Words class
+ *
+ * @package PhpMyAdmin
  */
 class Words
 {
@@ -79,6 +84,6 @@ class Words
                 break;
         }
 
-        return $words[$index] ?? '';
+        return isset($words[$index]) ? $words[$index] : '';
     }
 }

@@ -1,36 +1,34 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Functions for the replication GUI
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
-use function htmlspecialchars;
-use function in_array;
-use function is_array;
-use function is_int;
-use function mb_strrpos;
-use function mb_strtolower;
-use function mb_substr;
-use function sprintf;
-use function str_replace;
-use function strlen;
-use function strtok;
-use function time;
-
 /**
  * Functions for the replication GUI
+ *
+ * @package PhpMyAdmin
  */
 class ReplicationGui
 {
-    /** @var Replication */
+    /**
+     * @var Replication
+     */
     private $replication;
 
-    /** @var Template */
+    /**
+     * @var Template
+     */
     private $template;
 
     /**
+     * ReplicationGui constructor.
+     *
      * @param Replication $replication Replication instance
      * @param Template    $template    Template instance
      */
@@ -48,7 +46,9 @@ class ReplicationGui
     public function getHtmlForErrorMessage()
     {
         $html = '';
-        if (isset($_SESSION['replication']['sr_action_status'], $_SESSION['replication']['sr_action_info'])) {
+        if (isset($_SESSION['replication']['sr_action_status'])
+            && isset($_SESSION['replication']['sr_action_info'])
+        ) {
             if ($_SESSION['replication']['sr_action_status'] == 'error') {
                 $error_message = $_SESSION['replication']['sr_action_info'];
                 $html .= Message::error($error_message)->getDisplay();
@@ -237,10 +237,10 @@ class ReplicationGui
     /**
      * This function returns html code for table with replication status.
      *
-     * @param string $type     either master or slave
-     * @param bool   $isHidden if true, then default style is set to hidden,
-     *                         default value false
-     * @param bool   $hasTitle if true, then title is displayed, default true
+     * @param string  $type     either master or slave
+     * @param boolean $isHidden if true, then default style is set to hidden,
+     *                          default value false
+     * @param boolean $hasTitle if true, then title is displayed, default true
      *
      * @return string HTML code
      */
@@ -461,8 +461,8 @@ class ReplicationGui
                     );
                 } else {
                     Core::sendHeaderLocation(
-                        './index.php?route=/server/replication'
-                        . Url::getCommonRaw($GLOBALS['url_params'], '&')
+                        './server_replication.php'
+                        . Url::getCommonRaw($GLOBALS['url_params'])
                     );
                 }
             }
@@ -473,7 +473,7 @@ class ReplicationGui
     /**
      * handle control requests for Slave Change Master
      *
-     * @return bool
+     * @return boolean
      */
     public function handleRequestForSlaveChangeMaster()
     {
@@ -547,7 +547,7 @@ class ReplicationGui
     /**
      * handle control requests for Slave Server Control
      *
-     * @return bool
+     * @return boolean
      */
     public function handleRequestForSlaveServerControl()
     {
@@ -555,9 +555,9 @@ class ReplicationGui
             $_POST['sr_slave_control_parm'] = null;
         }
         if ($_POST['sr_slave_action'] == 'reset') {
-            $qStop = $this->replication->slaveControl('STOP', null, DatabaseInterface::CONNECT_USER);
-            $qReset = $GLOBALS['dbi']->tryQuery('RESET SLAVE;');
-            $qStart = $this->replication->slaveControl('START', null, DatabaseInterface::CONNECT_USER);
+            $qStop = $this->replication->slaveControl("STOP", null, DatabaseInterface::CONNECT_USER);
+            $qReset = $GLOBALS['dbi']->tryQuery("RESET SLAVE;");
+            $qStart = $this->replication->slaveControl("START", null, DatabaseInterface::CONNECT_USER);
 
             $result = ($qStop !== false && $qStop !== -1 &&
                 $qReset !== false && $qReset !== -1 &&
@@ -578,7 +578,7 @@ class ReplicationGui
     /**
      * handle control requests for Slave Skip Error
      *
-     * @return bool
+     * @return boolean
      */
     public function handleRequestForSlaveSkipError()
     {
@@ -587,11 +587,11 @@ class ReplicationGui
             $count = $_POST['sr_skip_errors_count'] * 1;
         }
 
-        $qStop = $this->replication->slaveControl('STOP', null, DatabaseInterface::CONNECT_USER);
+        $qStop = $this->replication->slaveControl("STOP", null, DatabaseInterface::CONNECT_USER);
         $qSkip = $GLOBALS['dbi']->tryQuery(
-            'SET GLOBAL SQL_SLAVE_SKIP_COUNTER = ' . $count . ';'
+            "SET GLOBAL SQL_SLAVE_SKIP_COUNTER = " . $count . ";"
         );
-        $qStart = $this->replication->slaveControl('START', null, DatabaseInterface::CONNECT_USER);
+        $qStart = $this->replication->slaveControl("START", null, DatabaseInterface::CONNECT_USER);
 
         $result = ($qStop !== false && $qStop !== -1 &&
             $qSkip !== false && $qSkip !== -1 &&

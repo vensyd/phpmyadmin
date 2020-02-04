@@ -1,18 +1,18 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Helper for multi submit forms
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 use PhpMyAdmin\CentralColumns;
-use PhpMyAdmin\Common;
-use PhpMyAdmin\Controllers\Database\ExportController;
 use PhpMyAdmin\Message;
 use PhpMyAdmin\MultSubmits;
 use PhpMyAdmin\Response;
 use PhpMyAdmin\Sql;
 use PhpMyAdmin\Template;
-use PhpMyAdmin\Url;
 use PhpMyAdmin\Util;
 
 if (! defined('PHPMYADMIN')) {
@@ -44,15 +44,13 @@ foreach ($request_params as $one_request_param) {
 }
 $response = Response::getInstance();
 
-global $containerBuilder, $db, $table,  $clause_is_unique, $from_prefix, $goto, $message,
+global $db, $table,  $clause_is_unique, $from_prefix, $goto,
        $mult_btn, $original_sql_query, $query_type, $reload,
        $selected, $selected_fld, $selected_recent_table, $sql_query,
        $submit_mult, $table_type, $to_prefix, $url_query, $pmaThemeImage;
 
 $multSubmits = new MultSubmits();
 $template = new Template();
-
-$action = $action ?? '';
 
 /**
  * Prepares the work and runs some other scripts if required
@@ -64,10 +62,7 @@ if (! empty($submit_mult)
     || ! empty($selected_fld)
     || ! empty($_POST['rows_to_delete']))
 ) {
-    // phpcs:disable PSR1.Files.SideEffects
     define('PMA_SUBMIT_MULT', 1);
-    // phpcs:enable
-
     if (! empty($_POST['selected_dbs'])) {
         // coming from server database view - do something with
         // selected databases
@@ -98,9 +93,7 @@ if (! empty($submit_mult)
                 break;
             case 'export':
                 unset($submit_mult);
-                /** @var ExportController $controller */
-                $controller = $containerBuilder->get(ExportController::class);
-                $controller->index();
+                include ROOT_PATH . 'db_export.php';
                 exit;
             case 'copy_tbl':
                 $views = $GLOBALS['dbi']->getVirtualTables($db);
@@ -119,8 +112,8 @@ if (! empty($submit_mult)
                     $table,
                     $selected,
                     $views,
-                    $original_sql_query ?? null,
-                    $original_url_query ?? null
+                    isset($original_sql_query) ? $original_sql_query : null,
+                    isset($original_url_query) ? $original_url_query : null
                 );
                 $response->disable();
                 $response->addHTML(
@@ -176,13 +169,10 @@ if (! empty($submit_mult) && ! empty($what)) {
     unset($message);
 
     if (strlen($table) > 0) {
-        Common::table();
-        $url_query .= Url::getCommon([
-            'goto' => Url::getFromRoute('/table/sql'),
-            'back' => Url::getFromRoute('/table/sql'),
-        ], '&');
+        include ROOT_PATH . 'libraries/tbl_common.inc.php';
+        $url_query .= '&amp;goto=tbl_sql.php&amp;back=tbl_sql.php';
     } elseif (strlen($db) > 0) {
-        Common::database();
+        include ROOT_PATH . 'libraries/db_common.inc.php';
 
         list(
             $tables,
@@ -194,9 +184,9 @@ if (! empty($submit_mult) && ! empty($what)) {
             $tooltip_truename,
             $tooltip_aliasname,
             $pos
-        ) = Util::getDbInfo($db, $sub_part ?? '');
+        ) = Util::getDbInfo($db, isset($sub_part) ? $sub_part : '');
     } else {
-        Common::server();
+        include_once ROOT_PATH . 'libraries/server_common.inc.php';
     }
 
     // Builds the query
@@ -217,8 +207,8 @@ if (! empty($submit_mult) && ! empty($what)) {
         $table,
         $selected,
         $views,
-        $original_sql_query ?? null,
-        $original_url_query ?? null
+        isset($original_sql_query) ? $original_sql_query : null,
+        isset($original_url_query) ? $original_url_query : null
     );
 
 
@@ -256,7 +246,6 @@ if (! empty($submit_mult) && ! empty($what)) {
         $GLOBALS['dbi']->freeResult($result);
     }
 
-    $default_fk_check_value = false;
     if ($query_type == 'drop_tbl'
         || $query_type == 'empty_tbl'
         || $query_type == 'row_delete'
@@ -273,9 +262,9 @@ if (! empty($submit_mult) && ! empty($what)) {
         $db,
         $table,
         $views,
-        $primary ?? null,
-        $from_prefix ?? null,
-        $to_prefix ?? null
+        isset($primary) ? $primary : null,
+        isset($from_prefix) ? $from_prefix : null,
+        isset($to_prefix) ? $to_prefix : null
     );
     //update the existed variable
     if (isset($reload_ret)) {

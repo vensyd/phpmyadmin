@@ -1,6 +1,9 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Various checks and message functions used on index page.
+ *
+ * @package PhpMyAdmin-Setup
  */
 declare(strict_types=1);
 
@@ -8,15 +11,13 @@ namespace PhpMyAdmin\Setup;
 
 use PhpMyAdmin\Sanitize;
 use PhpMyAdmin\VersionInformation;
-use function htmlspecialchars;
-use function is_array;
-use function sprintf;
-use function uniqid;
 
 /**
  * PhpMyAdmin\Setup\Index class
  *
  * Various checks and message functions used on index page.
+ *
+ * @package PhpMyAdmin-Setup
  */
 class Index
 {

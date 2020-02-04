@@ -1,6 +1,9 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Formset processing library
+ *
+ * @package PhpMyAdmin-Setup
  */
 declare(strict_types=1);
 
@@ -14,6 +17,8 @@ use PhpMyAdmin\Url;
 
 /**
  * PhpMyAdmin\Setup\FormProcessing class
+ *
+ * @package PhpMyAdmin-Setup
  */
 class FormProcessing
 {
@@ -49,8 +54,8 @@ class FormProcessing
         }
 
         // form has errors, show warning
-        $page = $_GET['page'] ?? '';
-        $formset = $_GET['formset'] ?? '';
+        $page = isset($_GET['page']) ? $_GET['page'] : '';
+        $formset = isset($_GET['formset']) ? $_GET['formset'] : '';
         $formId = Core::isValid($_GET['id'], 'numeric') ? $_GET['id'] : '';
         if ($formId === null && $page == 'servers') {
             // we've just added a new server, get its id

@@ -4,11 +4,9 @@
 {% block content %}
 
   {% if data is not empty %}
-    <div class="row">
     <a href="#openAdvisorInstructions">{{ get_icon('b_help', 'Instructions'|trans) }}</a>
-    </div>
 
-    <div id="statustabs_advisor" class="row"></div>
+    <div id="statustabs_advisor"></div>
 
     <div id="advisorInstructionsDialog" class="hide">
       <p>

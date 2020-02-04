@@ -1,3 +1,4 @@
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * @fileoverview    functions used on the database structure page
  * @name            Database Structure
@@ -10,7 +11,7 @@
 var DatabaseStructure = {};
 
 /**
- * AJAX scripts for /database/structure
+ * AJAX scripts for db_structure.php
  *
  * Actions ajaxified here:
  * Drop Database
@@ -50,7 +51,7 @@ DatabaseStructure.adjustTotals = function () {
     /**
      * @var $allTr jQuery object that references all the rows in the list of tables
      */
-    var $allTr = $('#tablesForm').find('table.data tbody').first().find('tr');
+    var $allTr = $('#tablesForm').find('table.data tbody:first tr');
     // New summary values for the table
     var tableSum = $allTr.length;
     var rowsSum = 0;
@@ -244,7 +245,7 @@ AJAX.registerOnload('database/structure.js', function () {
             }
             $.ajax({
                 type: 'POST',
-                url: 'index.php?route=/database/structure',
+                url: 'db_structure.php',
                 dataType: 'html',
                 data: formData
 

@@ -1,9 +1,12 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * OpenDocument Spreadsheet import plugin for phpMyAdmin
  *
  * @todo       Pretty much everything
  * @todo       Importing of accented characters seems to fail
+ * @package    PhpMyAdmin-Import
+ * @subpackage ODS
  */
 declare(strict_types=1);
 
@@ -17,20 +20,18 @@ use PhpMyAdmin\Properties\Options\Groups\OptionsPropertyRootGroup;
 use PhpMyAdmin\Properties\Options\Items\BoolPropertyItem;
 use PhpMyAdmin\Properties\Plugins\ImportPluginProperties;
 use SimpleXMLElement;
-use function count;
-use function implode;
-use function libxml_disable_entity_loader;
-use function rtrim;
-use function simplexml_load_string;
-use function strcmp;
-use function strlen;
-use const LIBXML_COMPACT;
 
 /**
  * Handles the import for the ODS format
+ *
+ * @package    PhpMyAdmin-Import
+ * @subpackage ODS
  */
 class ImportOds extends ImportPlugin
 {
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
@@ -54,14 +55,14 @@ class ImportOds extends ImportPlugin
         // $importPluginProperties
         // this will be shown as "Format specific options"
         $importSpecificOptions = new OptionsPropertyRootGroup(
-            'Format Specific Options'
+            "Format Specific Options"
         );
 
         // general options main group
-        $generalOptions = new OptionsPropertyMainGroup('general_opts');
+        $generalOptions = new OptionsPropertyMainGroup("general_opts");
         // create primary items and add them to the group
         $leaf = new BoolPropertyItem(
-            'col_names',
+            "col_names",
             __(
                 'The first line of the file contains the table column names'
                 . ' <i>(if this is unchecked, the first line will become part'
@@ -70,19 +71,19 @@ class ImportOds extends ImportPlugin
         );
         $generalOptions->addProperty($leaf);
         $leaf = new BoolPropertyItem(
-            'empty_rows',
+            "empty_rows",
             __('Do not import empty rows')
         );
         $generalOptions->addProperty($leaf);
         $leaf = new BoolPropertyItem(
-            'recognize_percentages',
+            "recognize_percentages",
             __(
                 'Import percentages as proper decimals <i>(ex. 12.00% to .12)</i>'
             )
         );
         $generalOptions->addProperty($leaf);
         $leaf = new BoolPropertyItem(
-            'recognize_currency',
+            "recognize_currency",
             __('Import currencies <i>(ex. $5.00 to 5.00)</i>')
         );
         $generalOptions->addProperty($leaf);
@@ -108,7 +109,7 @@ class ImportOds extends ImportPlugin
 
         $i = 0;
         $len = 0;
-        $buffer = '';
+        $buffer = "";
 
         /**
          * Read in the file via Import::getNextChunk so that
@@ -141,7 +142,7 @@ class ImportOds extends ImportPlugin
          * result in increased performance without the need to
          * alter the code in any way. It's basically a freebee.
          */
-        $xml = @simplexml_load_string($buffer, 'SimpleXMLElement', LIBXML_COMPACT);
+        $xml = @simplexml_load_string($buffer, "SimpleXMLElement", LIBXML_COMPACT);
 
         unset($buffer);
 
@@ -192,7 +193,7 @@ class ImportOds extends ImportPlugin
                     continue;
                 }
                 /* Iterate over columns */
-                $cellCount = $row->count();
+                $cellCount = count($row);
                 $a = 0;
                 /** @var SimpleXMLElement $cell */
                 foreach ($row as $cell) {
@@ -200,7 +201,7 @@ class ImportOds extends ImportPlugin
                     $text = $cell->children('text', true);
                     $cell_attrs = $cell->attributes('office', true);
 
-                    if ($text->count() != 0) {
+                    if (count($text) != 0) {
                         $attr = $cell->attributes('table', true);
                         $num_repeat = (int) $attr['number-columns-repeated'];
                         $num_iterations = $num_repeat ?: 1;
@@ -321,7 +322,11 @@ class ImportOds extends ImportPlugin
             $max_cols = 0;
         }
 
-        unset($tempRow, $tempRows, $col_names, $sheets, $xml);
+        unset($tempRow);
+        unset($tempRows);
+        unset($col_names);
+        unset($sheets);
+        unset($xml);
 
         /**
          * Bring accumulated rows into the corresponding table
@@ -376,7 +381,8 @@ class ImportOds extends ImportPlugin
         /* Created and execute necessary SQL statements from data */
         $this->import->buildSql($db_name, $tables, $analyses, $create, $options, $sql_data);
 
-        unset($tables, $analyses);
+        unset($tables);
+        unset($analyses);
 
         /* Commit any possible data in buffers */
         $this->import->runQuery('', '', $sql_data);
@@ -398,13 +404,13 @@ class ImportOds extends ImportPlugin
                 (string) $cell_attrs['value-type']
             )
         ) {
-            $value = (float) $cell_attrs['value'];
+            $value = (double) $cell_attrs['value'];
 
             return $value;
         } elseif ($_REQUEST['ods_recognize_currency']
             && ! strcmp('currency', (string) $cell_attrs['value-type'])
         ) {
-            $value = (float) $cell_attrs['value'];
+            $value = (double) $cell_attrs['value'];
 
             return $value;
         }

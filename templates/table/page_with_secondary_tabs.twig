@@ -2,17 +2,15 @@
     <ul id="topmenu2">
         {{ get_html_tab({
             'icon': 'b_props',
-            'link': url('/table/structure'),
+            'link': 'tbl_structure.php',
             'text': 'Table structure'|trans,
-            'id': 'table_structure_id',
-            'active': route == '/table/structure'
+            'id': 'table_strucuture_id'
         }, url_params) }}
         {{ get_html_tab({
             'icon': 'b_relations',
-            'link': url('/table/relation'),
+            'link': 'tbl_relation.php',
             'text': 'Relation view'|trans,
-            'id': 'table_relation_id',
-            'active': route == '/table/relation'
+            'id': 'table_relation_id'
         }, url_params) }}
     </ul>
     <div class="clearfloat"></div>

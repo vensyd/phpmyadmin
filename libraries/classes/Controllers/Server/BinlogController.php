@@ -1,23 +1,25 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Holds the PhpMyAdmin\Controllers\Server\BinlogController
+ *
+ * @package PhpMyAdmin\Controllers
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin\Controllers\Server;
 
-use PhpMyAdmin\Common;
 use PhpMyAdmin\Controllers\AbstractController;
 use PhpMyAdmin\DatabaseInterface;
-use PhpMyAdmin\Html\Generator;
 use PhpMyAdmin\Message;
 use PhpMyAdmin\Response;
 use PhpMyAdmin\Template;
 use PhpMyAdmin\Util;
-use function array_key_exists;
 
 /**
  * Handles viewing binary logs
+ *
+ * @package PhpMyAdmin\Controllers
  */
 class BinlogController extends AbstractController
 {
@@ -49,12 +51,14 @@ class BinlogController extends AbstractController
      * Index action
      *
      * @param array $params Request params
+     *
+     * @return string
      */
-    public function index(array $params): string
+    public function indexAction(array $params): string
     {
         global $cfg, $pmaThemeImage;
 
-        Common::server();
+        include_once ROOT_PATH . 'libraries/server_common.inc.php';
 
         $position = ! empty($params['pos']) ? (int) $params['pos'] : 0;
 
@@ -109,7 +113,7 @@ class BinlogController extends AbstractController
             'url_params' => $urlParams,
             'binary_logs' => $this->binaryLogs,
             'log' => $params['log'],
-            'sql_message' => Generator::getMessage(Message::success(), $sqlQuery),
+            'sql_message' => Util::getMessage(Message::success(), $sqlQuery),
             'values' => $values,
             'has_previous' => $position > 0,
             'has_next' => $numRows >= $cfg['MaxRows'],
@@ -126,6 +130,8 @@ class BinlogController extends AbstractController
      * @param string $log      Binary log file name
      * @param int    $position Position to display
      * @param int    $maxRows  Maximum number of rows
+     *
+     * @return string
      */
     private function getSqlQuery(
         string $log,

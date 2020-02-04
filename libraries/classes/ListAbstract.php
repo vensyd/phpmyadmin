@@ -1,24 +1,29 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * hold the ListAbstract base class
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
 use ArrayObject;
-use function htmlspecialchars;
-use function in_array;
 
 /**
  * Generic list class
  *
  * @todo add caching
  * @abstract
+ * @package PhpMyAdmin
+ * @since   phpMyAdmin 2.9.10
  */
 abstract class ListAbstract extends ArrayObject
 {
-    /** @var mixed   empty item */
+    /**
+     * @var mixed   empty item
+     */
     protected $item_empty = '';
 
     /**
@@ -36,7 +41,6 @@ abstract class ListAbstract extends ArrayObject
      * missing at least one item it returns false otherwise true
      *
      * @param mixed[] ...$params params
-     *
      * @return bool true if all items exists, otherwise false
      */
     public function exists(...$params)
@@ -53,9 +57,9 @@ abstract class ListAbstract extends ArrayObject
     /**
      * returns HTML <option>-tags to be used inside <select></select>
      *
-     * @param string|true $selected                   the selected db or true for
-     *                                                selecting current db
-     * @param bool        $include_information_schema whether include information schema
+     * @param mixed   $selected                   the selected db or true for
+     *                                            selecting current db
+     * @param boolean $include_information_schema whether include information schema
      *
      * @return string  HTML option tags
      */
@@ -63,13 +67,13 @@ abstract class ListAbstract extends ArrayObject
         $selected = '',
         $include_information_schema = true
     ) {
-        if ($selected === true) {
+        if (true === $selected) {
             $selected = $this->getDefault();
         }
 
         $options = '';
         foreach ($this as $each_item) {
-            if ($include_information_schema === false
+            if (false === $include_information_schema
                 && $GLOBALS['dbi']->isSystemSchema($each_item)
             ) {
                 continue;

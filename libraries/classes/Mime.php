@@ -1,20 +1,19 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * MIME detection code.
  *
+ * @package PhpMyAdmin
  * @todo Maybe we could try to use fileinfo module if loaded
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
-use function chr;
-use function mb_strlen;
-use function mb_substr;
-use function substr;
-
 /**
  * PhpMyAdmin\Mime class;
+ *
+ * @package PhpMyAdmin
  */
 class Mime
 {

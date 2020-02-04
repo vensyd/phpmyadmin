@@ -1,20 +1,22 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Hold PhpMyAdmin\SysInfoWINNT class
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
 use COM;
-use function class_exists;
-use function count;
-use function in_array;
+use PhpMyAdmin\SysInfoBase;
 use function is_string;
-use function trim;
 
 /**
  * Windows NT based SysInfo class
+ *
+ * @package PhpMyAdmin
  */
 class SysInfoWINNT extends SysInfoBase
 {
@@ -105,7 +107,7 @@ class SysInfoWINNT extends SysInfoBase
     public function memory()
     {
         $buffer = $this->_getWMI(
-            'Win32_OperatingSystem',
+            "Win32_OperatingSystem",
             [
                 'TotalVisibleMemorySize',
                 'FreePhysicalMemory',

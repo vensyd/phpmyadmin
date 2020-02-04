@@ -4,14 +4,12 @@
     },
     'sub_tabs': [
         {
-            'link': url('/database/multi_table_query'),
-            'text': 'Multi-table query'|trans,
-            'active': route == '/database/multi_table_query'
+            'link': 'db_multi_table_query.php',
+            'text': 'Multi-table query'|trans
         },
         {
-            'link': url('/database/qbe'),
-            'text': 'Query by example'|trans,
-            'active': route == '/database/qbe'
+            'link': 'db_qbe.php',
+            'text': 'Query by example'|trans
         }
     ]
 } only %}
@@ -20,11 +18,11 @@
     'message': 'Query window'|trans,
     'initial_sliders_state': 'open',
 } only %}
-<form action="" id="multi_table_query_form" class="multi_table_query_form query_form">
+<form action="" id="query_form">
     <input type="hidden" id="db_name" value="{{ db }}">
     <fieldset>
         {% for table in tables %}
-            <div class="query-form__div--hide" id="{{ table.hash }}">
+            <div style="display:none" id="{{ table.hash }}">
                 <option value="*">*</option>
                 {% for column in table.columns %}
                     <option value="{{ column }}">{{ column }}</option>
@@ -33,16 +31,16 @@
         {% endfor %}
 
         {% for id in 0..default_no_of_columns %}
-            {% if id == 0 %}<div class="query-form__div--hide" id="new_column_layout">{% endif %}
-            <fieldset class="column_details query-form__fieldset--inline">
-                <select class="tableNameSelect query-form__select--inline">
+            {% if id == 0 %}<div style="display:none" id="new_column_layout">{% endif %}
+            <fieldset style="display:inline" class="column_details">
+                <select style="display:inline" class="tableNameSelect">
                     <option value="">{% trans 'select table' %}</option>
                     {% for table in tables|keys %}
                         <option value="{{ table }}">{{ table }}</option>
                     {% endfor %}
                 </select>
                 <span>.</span>
-                <select class="columnNameSelect query-form__select--inline">
+                <select style="display:inline" class="columnNameSelect">
                     <option value="">{% trans 'select column' %}</option>
                 </select>
                 <br>
@@ -63,13 +61,13 @@
                 <div>
                     <table>
 
-                        <tr class="sort_order query-form__tr--bg-none">
+                        <tr class="sort_order" style="background:none">
                             <td>{% trans 'Sort' %}</td>
                             <td><input type="radio" name="sort[{{ id }}]">{% trans 'Ascending' %}</td>
                             <td><input type="radio" name="sort[{{ id }}]">{% trans 'Descending' %}</td>
                         </tr>
 
-                        <tr class="logical_operator query-form__tr--bg-none query-form__tr--hide">
+                        <tr class="logical_operator" style="background:none;display:none">
                             <td>{% trans 'Add as' %}</td>
                             <td>
                                 <input type="radio"
@@ -88,7 +86,7 @@
                             </td>
                         </tr>
 
-                        <tr class="query-form__tr--bg-none">
+                        <tr style="background:none">
                             <td>Op </td>
                             <td>
                                 <select class="criteria_op">
@@ -120,7 +118,7 @@
                             </td>
                         </tr>
 
-                        <tr class="rhs_table query-form__tr--hide query-form__tr--bg-none">
+                        <tr class="rhs_table" style="display:none;background:none">
                             <td></td>
                             <td>
                                 <select  class="tableNameSelect">
@@ -131,17 +129,18 @@
                                 </select><span>.</span>
                             </td>
                             <td>
-                                <select class="columnNameSelect query-form__select--inline">
+                                <select style="display:inline" class="columnNameSelect">
                                     <option value="">{% trans 'select column' %}</option>
                                 </select>
                             </td>
                         </tr>
 
-                        <tr class="rhs_text query-form__tr--bg-none">
+                        <tr style="background:none" class="rhs_text">
                             <td></td>
                             <td colspan="2">
                                 <input type="text"
-                                    class="rhs_text_val query-form__input--wide"
+                                    style="width:91%"
+                                    class="rhs_text_val"
                                     placeholder="{% trans 'Enter criteria as free text' %}">
                             </td>
                         </tr>
@@ -151,23 +150,24 @@
                 </div>
                 <a href="#"
                     title="{% trans 'Remove this column' %}"
-                    class="removeColumn query-form__remove-column">
+                    style="float:right;color:red"
+                    class="removeColumn">
                     X
                 </a>
             </fieldset>
             {% if id == 0 %}</div>{% endif %}
         {% endfor %}
 
-        <fieldset class="query-form__fieldset--inline">
+        <fieldset style="display:inline">
             <input class="btn btn-secondary" type="button" value="{% trans '+ Add column' %}" id="add_column_button">
         </fieldset>
 
         <fieldset>
             {% apply spaceless %}
                 <textarea id="MultiSqlquery"
-                    class="query-form__multi-sql-query"
                     cols="80"
                     rows="4"
+                    style="float:left"
                     name="sql_query"
                     dir="ltr">
                 </textarea>

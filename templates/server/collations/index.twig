@@ -1,12 +1,9 @@
-<div class=container-fluid>
-<div class="row">
-  <h2>
-    {{ get_image('s_asci') }}
-    {% trans 'Character sets and collations' %}
-  </h2>
-</div>
+<h2>
+  {{ get_image('s_asci') }}
+  {% trans 'Character sets and collations' %}
+</h2>
 
-<div id="div_mysql_charset_collations" class="row">
+<div id="div_mysql_charset_collations">
   <table class="data noclick">
     <thead>
       <tr>
@@ -32,5 +29,4 @@
       {% endfor %}
     {% endfor %}
   </table>
-</div>
 </div>

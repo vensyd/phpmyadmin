@@ -1,6 +1,9 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * hold PhpMyAdmin\Twig\UtilExtension class
+ *
+ * @package PhpMyAdmin\Twig
  */
 declare(strict_types=1);
 
@@ -10,6 +13,11 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
+/**
+ * Class UtilExtension
+ *
+ * @package PhpMyAdmin\Twig
+ */
 class UtilExtension extends AbstractExtension
 {
     /**
@@ -26,7 +34,7 @@ class UtilExtension extends AbstractExtension
             ),
             new TwigFunction(
                 'get_browse_upload_file_block',
-                '\PhpMyAdmin\Html\Forms\Fields\BrowseUploadFileBlock::generate',
+                'PhpMyAdmin\Util::getBrowseUploadFileBlock',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
@@ -43,37 +51,37 @@ class UtilExtension extends AbstractExtension
             ),
             new TwigFunction(
                 'format_sql',
-                '\PhpMyAdmin\Html\Generator::formatSql',
+                'PhpMyAdmin\Util::formatSql',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'get_button_or_image',
-                '\PhpMyAdmin\Html\Generator::getButtonOrImage',
+                'PhpMyAdmin\Util::getButtonOrImage',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'get_docu_link',
-                '\PhpMyAdmin\Html\MySQLDocumentation::getDocumentationLink',
+                'PhpMyAdmin\Util::getDocuLink',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'get_list_navigator',
-                '\PhpMyAdmin\Html\Generator::getListNavigator',
+                'PhpMyAdmin\Util::getListNavigator',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'show_docu',
-                '\PhpMyAdmin\Html\MySQLDocumentation::showDocumentation',
+                'PhpMyAdmin\Util::showDocu',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'get_dropdown',
-                '\PhpMyAdmin\Html\Forms\Fields\DropDown::generate',
+                'PhpMyAdmin\Util::getDropdown',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'get_fk_checkbox',
-                '\PhpMyAdmin\Html\Forms\Fields\FKCheckbox::generate',
+                'PhpMyAdmin\Util::getFKCheckbox',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
@@ -86,32 +94,37 @@ class UtilExtension extends AbstractExtension
             ),
             new TwigFunction(
                 'get_html_tab',
-                '\PhpMyAdmin\Html\Generator::getHtmlTab',
+                'PhpMyAdmin\Util::getHtmlTab',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'get_icon',
-                '\PhpMyAdmin\Html\Generator::getIcon',
+                'PhpMyAdmin\Util::getIcon',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'get_image',
-                '\PhpMyAdmin\Html\Generator::getImage',
+                'PhpMyAdmin\Util::getImage',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'get_radio_fields',
-                '\PhpMyAdmin\Html\Forms\Fields\RadioList::generate',
+                'PhpMyAdmin\Util::getRadioFields',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'get_select_upload_file_block',
-                '\PhpMyAdmin\Html\Forms\Fields\DropDownUploadFileBlock::generate',
+                'PhpMyAdmin\Util::getSelectUploadFileBlock',
+                ['is_safe' => ['html']]
+            ),
+            new TwigFunction(
+                'get_script_name_for_option',
+                'PhpMyAdmin\Util::getScriptNameForOption',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'get_start_and_number_of_rows_panel',
-                'PhpMyAdmin\Html\Generator::getStartAndNumberOfRowsPanel',
+                'PhpMyAdmin\Util::getStartAndNumberOfRowsPanel',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
@@ -125,12 +138,12 @@ class UtilExtension extends AbstractExtension
             ),
             new TwigFunction(
                 'link_or_button',
-                'PhpMyAdmin\Html\Generator::linkOrButton',
+                'PhpMyAdmin\Util::linkOrButton',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
                 'link_to_var_documentation',
-                'PhpMyAdmin\Html\Generator::linkToVarDocumentation',
+                'PhpMyAdmin\Util::linkToVarDocumentation',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
@@ -139,7 +152,7 @@ class UtilExtension extends AbstractExtension
             ),
             new TwigFunction(
                 'show_hint',
-                '\PhpMyAdmin\Html\Generator::showHint',
+                'PhpMyAdmin\Util::showHint',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
@@ -147,12 +160,8 @@ class UtilExtension extends AbstractExtension
                 'PhpMyAdmin\Util::showIcons'
             ),
             new TwigFunction(
-                'show_text',
-                'PhpMyAdmin\Util::showText'
-            ),
-            new TwigFunction(
                 'show_mysql_docu',
-                '\PhpMyAdmin\Html\MySQLDocumentation::show',
+                'PhpMyAdmin\Util::showMySQLDocu',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
@@ -162,7 +171,7 @@ class UtilExtension extends AbstractExtension
             ),
             new TwigFunction(
                 'show_php_docu',
-                '\PhpMyAdmin\Html\Generator::showPHPDocumentation',
+                'PhpMyAdmin\Util::showPHPDocu',
                 ['is_safe' => ['html']]
             ),
             new TwigFunction(
@@ -176,7 +185,7 @@ class UtilExtension extends AbstractExtension
             ),
             new TwigFunction(
                 'generate_hidden_max_file_size',
-                '\PhpMyAdmin\Html\Forms\Fields\MaxFileSize::generate',
+                'PhpMyAdmin\Util::generateHiddenMaxFileSize',
                 ['is_safe' => ['html']]
             ),
         ];

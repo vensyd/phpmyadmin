@@ -1,12 +1,14 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Holds the PhpMyAdmin\Database\Designer class
+ *
+ * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin\Database;
 
-use PhpMyAdmin\Database\Designer\DesignerTable;
 use PhpMyAdmin\DatabaseInterface;
 use PhpMyAdmin\Message;
 use PhpMyAdmin\Plugins;
@@ -14,28 +16,34 @@ use PhpMyAdmin\Plugins\SchemaPlugin;
 use PhpMyAdmin\Relation;
 use PhpMyAdmin\Template;
 use PhpMyAdmin\Util;
+use PhpMyAdmin\Database\Designer\DesignerTable;
 use stdClass;
-use function count;
-use function intval;
-use function json_decode;
-use function json_encode;
-use function strpos;
 
 /**
  * Set of functions related to database designer
+ *
+ * @package PhpMyAdmin
  */
 class Designer
 {
-    /** @var DatabaseInterface */
+    /**
+     * @var DatabaseInterface
+     */
     private $dbi;
 
-    /** @var Relation */
+    /**
+     * @var Relation
+     */
     private $relation;
 
-    /** @var Template */
+    /**
+     * @var Template
+     */
     public $template;
 
     /**
+     * Designer constructor.
+     *
      * @param DatabaseInterface $dbi      DatabaseInterface object
      * @param Relation          $relation Relation instance
      * @param Template          $template Template instance
@@ -98,11 +106,11 @@ class Designer
             return $result;
         }
 
-        $page_query = 'SELECT `page_nr`, `page_descr` FROM '
-            . Util::backquote($cfgRelation['db']) . '.'
+        $page_query = "SELECT `page_nr`, `page_descr` FROM "
+            . Util::backquote($cfgRelation['db']) . "."
             . Util::backquote($cfgRelation['pdf_pages'])
             . " WHERE db_name = '" . $this->dbi->escapeString($db) . "'"
-            . ' ORDER BY `page_descr`';
+            . " ORDER BY `page_descr`";
         $page_rs = $this->relation->queryAsControlUser(
             $page_query,
             false,
@@ -128,7 +136,7 @@ class Designer
         /* Scan for schema plugins */
         /** @var SchemaPlugin[] $export_list */
         $export_list = Plugins::getPlugins(
-            'schema',
+            "schema",
             'libraries/classes/Plugins/Schema/',
             null
         );
@@ -167,9 +175,8 @@ class Designer
                 . '";';
 
             $result = $this->dbi->fetchSingleRow($query);
-            if (is_array($result)) {
-                $params = json_decode((string) $result['settings_data'], true);
-            }
+
+            $params = json_decode((string) $result['settings_data'], true);
         }
 
         return $params;
@@ -268,17 +275,17 @@ class Designer
                     $columns_type[$table_column_name] = 'designer/FieldKey_small';
                 } else {
                     $columns_type[$table_column_name] = 'designer/Field_small';
-                    if (strpos($tab_column[$table_name]['TYPE'][$j], 'char') !== false
-                        || strpos($tab_column[$table_name]['TYPE'][$j], 'text') !== false) {
+                    if (false !== strpos($tab_column[$table_name]['TYPE'][$j], 'char')
+                        || false !== strpos($tab_column[$table_name]['TYPE'][$j], 'text')) {
                         $columns_type[$table_column_name] .= '_char';
-                    } elseif (strpos($tab_column[$table_name]['TYPE'][$j], 'int') !== false
-                        || strpos($tab_column[$table_name]['TYPE'][$j], 'float') !== false
-                        || strpos($tab_column[$table_name]['TYPE'][$j], 'double') !== false
-                        || strpos($tab_column[$table_name]['TYPE'][$j], 'decimal') !== false) {
+                    } elseif (false !== strpos($tab_column[$table_name]['TYPE'][$j], 'int')
+                        || false !== strpos($tab_column[$table_name]['TYPE'][$j], 'float')
+                        || false !== strpos($tab_column[$table_name]['TYPE'][$j], 'double')
+                        || false !== strpos($tab_column[$table_name]['TYPE'][$j], 'decimal')) {
                         $columns_type[$table_column_name] .= '_int';
-                    } elseif (strpos($tab_column[$table_name]['TYPE'][$j], 'date') !== false
-                        || strpos($tab_column[$table_name]['TYPE'][$j], 'time') !== false
-                        || strpos($tab_column[$table_name]['TYPE'][$j], 'year') !== false) {
+                    } elseif (false !== strpos($tab_column[$table_name]['TYPE'][$j], 'date')
+                        || false !== strpos($tab_column[$table_name]['TYPE'][$j], 'time')
+                        || false !== strpos($tab_column[$table_name]['TYPE'][$j], 'year')) {
                         $columns_type[$table_column_name] .= '_date';
                     }
                 }
@@ -299,6 +306,7 @@ class Designer
         ]);
     }
 
+
     /**
      * Returns HTML for Designer page
      *
@@ -309,7 +317,7 @@ class Designer
      * @param array           $scriptContr          initialization data array
      * @param DesignerTable[] $scriptDisplayField   displayed tables in designer with their display fields
      * @param int             $displayPage          page number of the selected page
-     * @param bool            $hasQuery             whether this is visual query builder
+     * @param boolean         $hasQuery             whether this is visual query builder
      * @param string          $selectedPage         name of the selected page
      * @param array           $paramsArray          array with class name for various buttons on side menu
      * @param array|null      $tabPos               table positions
@@ -346,17 +354,17 @@ class Designer
                     $columnsType[$tableColumnName] = 'designer/FieldKey_small';
                 } else {
                     $columnsType[$tableColumnName] = 'designer/Field_small';
-                    if (strpos($tabColumn[$tableName]['TYPE'][$j], 'char') !== false
-                        || strpos($tabColumn[$tableName]['TYPE'][$j], 'text') !== false) {
+                    if (false !== strpos($tabColumn[$tableName]['TYPE'][$j], 'char')
+                        || false !== strpos($tabColumn[$tableName]['TYPE'][$j], 'text')) {
                         $columnsType[$tableColumnName] .= '_char';
-                    } elseif (strpos($tabColumn[$tableName]['TYPE'][$j], 'int') !== false
-                        || strpos($tabColumn[$tableName]['TYPE'][$j], 'float') !== false
-                        || strpos($tabColumn[$tableName]['TYPE'][$j], 'double') !== false
-                        || strpos($tabColumn[$tableName]['TYPE'][$j], 'decimal') !== false) {
+                    } elseif (false !== strpos($tabColumn[$tableName]['TYPE'][$j], 'int')
+                        || false !== strpos($tabColumn[$tableName]['TYPE'][$j], 'float')
+                        || false !== strpos($tabColumn[$tableName]['TYPE'][$j], 'double')
+                        || false !== strpos($tabColumn[$tableName]['TYPE'][$j], 'decimal')) {
                         $columnsType[$tableColumnName] .= '_int';
-                    } elseif (strpos($tabColumn[$tableName]['TYPE'][$j], 'date') !== false
-                        || strpos($tabColumn[$tableName]['TYPE'][$j], 'time') !== false
-                        || strpos($tabColumn[$tableName]['TYPE'][$j], 'year') !== false) {
+                    } elseif (false !== strpos($tabColumn[$tableName]['TYPE'][$j], 'date')
+                        || false !== strpos($tabColumn[$tableName]['TYPE'][$j], 'time')
+                        || false !== strpos($tabColumn[$tableName]['TYPE'][$j], 'year')) {
                         $columnsType[$tableColumnName] .= '_date';
                     }
                 }

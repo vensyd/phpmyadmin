@@ -1,29 +1,31 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 
 /**
  * Holds the PhpMyAdmin\Controllers\Server\PluginsController
+ *
+ * @package PhpMyAdmin\Controllers
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin\Controllers\Server;
 
-use PhpMyAdmin\Common;
 use PhpMyAdmin\Controllers\AbstractController;
 use PhpMyAdmin\DatabaseInterface;
 use PhpMyAdmin\Response;
 use PhpMyAdmin\Server\Plugins;
 use PhpMyAdmin\Template;
-use function array_keys;
-use function ksort;
-use function mb_strtolower;
-use function preg_replace;
 
 /**
  * Handles viewing server plugin details
+ *
+ * @package PhpMyAdmin\Controllers
  */
 class PluginsController extends AbstractController
 {
-    /** @var Plugins */
+    /**
+     * @var Plugins
+     */
     private $plugins;
 
     /**
@@ -40,10 +42,12 @@ class PluginsController extends AbstractController
 
     /**
      * Index action
+     *
+     * @return string
      */
     public function index(): string
     {
-        Common::server();
+        include ROOT_PATH . 'libraries/server_common.inc.php';
 
         $header = $this->response->getHeader();
         $scripts = $header->getScripts();

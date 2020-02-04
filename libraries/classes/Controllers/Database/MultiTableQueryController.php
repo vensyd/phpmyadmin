@@ -1,33 +1,38 @@
 <?php
+/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Holds the PhpMyAdmin\Controllers\Database\MultiTableQueryController
+ *
+ * @package PhpMyAdmin\Controllers\Database
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin\Controllers\Database;
 
 use PhpMyAdmin\Database\MultiTableQuery;
+use PhpMyAdmin\Template;
 
 /**
  * Handles database multi-table querying
+ * @package PhpMyAdmin\Controllers\Database
  */
 class MultiTableQueryController extends AbstractController
 {
-    public function index(): string
+    /**
+     * @param Template $template Templace instance
+     *
+     * @return string HTML
+     */
+    public function index(Template $template): string
     {
-        $header = $this->response->getHeader();
-        $scripts = $header->getScripts();
-        $scripts->addFile('vendor/jquery/jquery.md5.js');
-        $scripts->addFile('database/multi_table_query.js');
-        $scripts->addFile('database/query_generator.js');
-
-        $queryInstance = new MultiTableQuery($this->dbi, $this->template, $this->db);
+        $queryInstance = new MultiTableQuery($this->dbi, $template, $this->db);
 
         return $queryInstance->getFormHtml();
     }
 
     /**
      * @param array $params Request parameters
+     * @return void
      */
     public function displayResults(array $params): void
     {
@@ -42,7 +47,6 @@ class MultiTableQueryController extends AbstractController
 
     /**
      * @param array $params Request parameters
-     *
      * @return array JSON
      */
     public function table(array $params): array
