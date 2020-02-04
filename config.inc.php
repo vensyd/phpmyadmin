@@ -24,6 +24,7 @@ $i = 0;
  */
 $i++;
 /* Authentication type */
+$cfg['CheckConfigurationPermissions'] = false;
 $cfg['Servers'][$i]['auth_type'] = 'cookie';
 /* Server parameters */
 $cfg['Servers'][$i]['host'] = 'appiandes.mysql.database.azure.com';
