@@ -1,18 +1,15 @@
 <?php
-/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * Hold PhpMyAdmin\SysInfoBase class
- *
- * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
+use const PHP_OS;
+
 /**
  * Basic sysinfo class not providing any real data.
- *
- * @package PhpMyAdmin
  */
 class SysInfoBase
 {

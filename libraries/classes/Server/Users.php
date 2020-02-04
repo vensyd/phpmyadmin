@@ -1,9 +1,6 @@
 <?php
-/* vim: set expandtab sw=4 ts=4 sts=4: */
 /**
  * set of common functions for sub tabs in server level `Users` page
- *
- * @package PhpMyAdmin
  */
 declare(strict_types=1);
 
@@ -13,8 +10,6 @@ use PhpMyAdmin\Url;
 
 /**
  * PhpMyAdmin\Server\Users class
- *
- * @package PhpMyAdmin
  */
 class Users
 {
@@ -30,20 +25,20 @@ class Users
         $items = [
             [
                 'name' => __('User accounts overview'),
-                'url' => 'server_privileges.php',
-                'params' => Url::getCommon(['viewing_mode' => 'server']),
+                'url' => Url::getFromRoute('/server/privileges'),
+                'params' => Url::getCommon(['viewing_mode' => 'server'], '&'),
             ],
         ];
 
         if ($GLOBALS['dbi']->isSuperuser()) {
             $items[] = [
                 'name' => __('User groups'),
-                'url' => 'server_user_groups.php',
-                'params' => Url::getCommon(),
+                'url' => Url::getFromRoute('/server/user-groups'),
+                'params' => '',
             ];
         }
 
-        $retval  = '<ul id="topmenu2">';
+        $retval  = '<div class="row"><ul id="topmenu2">';
         foreach ($items as $item) {
             $class = '';
             if ($item['url'] === $selfUrl) {
@@ -56,7 +51,7 @@ class Users
             $retval .= '</a>';
             $retval .= '</li>';
         }
-        $retval .= '</ul>';
+        $retval .= '</ul></div>';
         $retval .= '<div class="clearfloat"></div>';
 
         return $retval;
