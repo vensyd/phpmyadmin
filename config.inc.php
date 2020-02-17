@@ -28,7 +28,7 @@ $cfg['CheckConfigurationPermissions'] = false;
 $cfg['Servers'][$i]['ssl'] = true; 
 $cfg['Servers'][$i]['auth_type'] = 'cookie';
 /* Server parameters */
-$cfg['Servers'][$i]['host'] = 'appiandes.mysql.database.azure.com';
+$cfg['Servers'][$i]['host'] = 'tstappiandynamics.mysql.database.azure.com';
 $cfg['Servers'][$i]['compress'] = false;
 $cfg['Servers'][$i]['AllowNoPassword'] = true;
 
